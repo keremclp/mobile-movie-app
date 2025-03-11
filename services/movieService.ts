@@ -95,6 +95,22 @@ export const fetchMovieGenres = async () => {
   }
 };
 
+export const fetchMoviesByGenre = async (genreId: string | number): Promise<Movie[]> => {
+  try {
+    const response = await fetch(
+      `${API_BASE_URL}/discover/movie?api_key=${getApiKey()}&with_genres=${genreId}&language=en-US&page=1&sort_by=popularity.desc`
+    );
+    
+    if (!response.ok) throw new Error(`Failed to fetch movies for genre ${genreId}`);
+    
+    const data = await response.json();
+    return transformMovies(data.results);
+  } catch (error) {
+    console.error(`Error fetching movies for genre ${genreId}:`, error);
+    return [];
+  }
+};
+
 // Helper function to transform movies from API format to our app format
 const transformMovies = (movies: any[]): Movie[] => {
   return movies.map(movie => ({
