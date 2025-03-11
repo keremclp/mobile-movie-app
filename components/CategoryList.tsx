@@ -1,14 +1,12 @@
 import { ScrollView, Text, View, ActivityIndicator, TouchableOpacity } from "react-native";
 import { colors } from "../constants/colors";
 import { useState, useEffect } from "react";
-import { fetchMovieGenres, fetchMoviesByGenre, fetchTrendingMovies } from "../services/movieService";
+import { fetchMovieGenres, fetchMoviesByGenre } from "../services/movieService";
 import { Movie } from "../types/movie";
 import MovieCard from "./MovieCard";
 
 const CategoryList = () => {
-  const [categories, setCategories] = useState([
-    { id: "trending", name: "Trending", active: true }
-  ]);
+  const [categories, setCategories] = useState<Array<{id: string | number, name: string, active: boolean}>>([]);
   const [loading, setLoading] = useState(true);
   const [movies, setMovies] = useState<Movie[]>([]);
   const [loadingMovies, setLoadingMovies] = useState(false);
@@ -29,12 +27,7 @@ const CategoryList = () => {
     // Fetch movies for selected category
     setLoadingMovies(true);
     try {
-      let fetchedMovies;
-      if (selectedId === "trending") {
-        fetchedMovies = await fetchTrendingMovies();
-      } else {
-        fetchedMovies = await fetchMoviesByGenre(selectedId);
-      }
+      const fetchedMovies = await fetchMoviesByGenre(selectedId);
       setMovies(fetchedMovies);
     } catch (error) {
       console.error("Failed to fetch movies for category:", error);
@@ -49,21 +42,21 @@ const CategoryList = () => {
       try {
         const genres = await fetchMovieGenres();
         
-        // Add genres to our categories list, keeping the "Trending" option
-        const updatedCategories = [
-          { id: "trending", name: "Trending", active: true },
-          ...genres.map((genre: any) => ({
-            id: genre.id,
-            name: genre.name,
-            active: false
-          }))
-        ];
+        // Mark the first genre as active
+        const updatedCategories = genres.map((genre: any, index: number) => ({
+          id: genre.id,
+          name: genre.name,
+          active: index === 0 // First genre is active by default
+        }));
         
         setCategories(updatedCategories);
         
-        // Load initial trending movies
-        const trendingMovies = await fetchTrendingMovies();
-        setMovies(trendingMovies);
+        // Load initial movies from first genre if available
+        if (genres.length > 0) {
+          const firstGenreId = genres[0].id;
+          const genreMovies = await fetchMoviesByGenre(firstGenreId);
+          setMovies(genreMovies);
+        }
       } catch (error) {
         console.error("Failed to load genres:", error);
       } finally {
