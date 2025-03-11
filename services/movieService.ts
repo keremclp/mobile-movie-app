@@ -111,6 +111,32 @@ export const fetchMoviesByGenre = async (genreId: string | number): Promise<Movi
   }
 };
 
+export interface MovieVideo {
+  id: string;
+  key: string;
+  name: string;
+  site: string;
+  type: string;
+  official: boolean;
+  published_at: string;
+}
+
+export const fetchMovieVideos = async (movieId: number): Promise<MovieVideo[]> => {
+  try {
+    const response = await fetch(
+      `${API_BASE_URL}/movie/${movieId}/videos?api_key=${getApiKey()}&language=en-US`
+    );
+    
+    if (!response.ok) throw new Error('Failed to fetch movie videos');
+    
+    const data = await response.json();
+    return data.results;
+  } catch (error) {
+    console.error('Error fetching movie videos:', error);
+    return [];
+  }
+};
+
 // Helper function to transform movies from API format to our app format
 const transformMovies = (movies: any[]): Movie[] => {
   return movies.map(movie => ({

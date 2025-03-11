@@ -2,11 +2,15 @@ import { Text, View, Image, ActivityIndicator, TouchableOpacity } from "react-na
 import { colors } from "../constants/colors";
 import { useEffect, useState } from "react";
 import { Movie } from "../types/movie";
-import { fetchTrendingMovies } from "../services/movieService";
+import { fetchMovieVideos, fetchTrendingMovies } from "../services/movieService";
+import VideoPlayer from "./VideoPlayer";
 
 const FeaturedMovie = () => {
   const [movie, setMovie] = useState<Movie | null>(null);
   const [loading, setLoading] = useState(true);
+  const [videoKey, setVideoKey] = useState<string>('');
+  const [isVideoVisible, setIsVideoVisible] = useState(false);
+  const [loadingVideo, setLoadingVideo] = useState(false);
 
   useEffect(() => {
     const loadFeaturedMovie = async () => {
@@ -35,6 +39,35 @@ const FeaturedMovie = () => {
 
     loadFeaturedMovie();
   }, []);
+
+  const handleWatchNow = async () => {
+    if (!movie) return;
+    
+    setLoadingVideo(true);
+    try {
+      const videos = await fetchMovieVideos(movie.id);
+      
+      // Find the first official trailer, or any trailer, or just the first video
+      const trailer = videos.find(v => v.type === 'Trailer' && v.official) || 
+                      videos.find(v => v.type === 'Trailer') || 
+                      videos[0];
+      
+      if (trailer && trailer.site.toLowerCase() === 'youtube') {
+        setVideoKey(trailer.key);
+        setIsVideoVisible(true);
+      } else {
+        console.log('No suitable video found');
+      }
+    } catch (error) {
+      console.error('Error getting movie videos:', error);
+    } finally {
+      setLoadingVideo(false);
+    }
+  };
+
+  const closeVideo = () => {
+    setIsVideoVisible(false);
+  };
 
   if (loading) {
     return (
@@ -93,7 +126,6 @@ const FeaturedMovie = () => {
           <Text style={{ color: colors.text, fontWeight: 'bold' }}>{movie.voteAverage.toFixed(1)}</Text>
         </View>
         
-        
         {/* Movie details */}
         <View style={{ padding: 20 }}>
           <Text style={{ color: colors.text, fontSize: 18, fontWeight: 'bold' }}>{movie.title}</Text>
@@ -109,12 +141,21 @@ const FeaturedMovie = () => {
               alignSelf: 'flex-start' 
             }}
             activeOpacity={0.7}
+            onPress={handleWatchNow}
+            disabled={loadingVideo}
           >
-            <Text style={{ color: colors.background, fontWeight: 'bold' }}>Watch Now</Text>
+            <Text style={{ color: colors.background, fontWeight: 'bold' }}>
+              {loadingVideo ? 'Loading...' : 'Watch Now'}
+            </Text>
           </TouchableOpacity>
-
         </View>
       </View>
+      
+      <VideoPlayer 
+        visible={isVideoVisible} 
+        videoKey={videoKey} 
+        onClose={closeVideo} 
+      />
     </View>
   );
 };
