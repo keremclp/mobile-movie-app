@@ -27,7 +27,7 @@ const MovieCard = ({ imageUrl, title, year, progress, width = 120, rating }: Mov
         )}
         
         {/* Rating badge */}
-        {rating && (
+        {typeof rating === 'number' && !isNaN(rating) && (
           <View style={{ 
             position: 'absolute', 
             top: 8, 
