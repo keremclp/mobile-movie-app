@@ -1,7 +1,49 @@
-import { Text, View, Image } from "react-native";
+import { Text, View, Image, ActivityIndicator, TouchableOpacity } from "react-native";
 import { colors } from "../constants/colors";
+import { useEffect, useState } from "react";
+import { Movie } from "../types/movie";
+import { fetchTrendingMovies } from "../services/movieService";
 
 const FeaturedMovie = () => {
+  const [movie, setMovie] = useState<Movie | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const loadFeaturedMovie = async () => {
+      setLoading(true);
+      try {
+        const trendingMovies = await fetchTrendingMovies();
+        // Get the first trending movie with a backdrop image
+        const featuredMovie = trendingMovies.find(m => m.backdropPath) || trendingMovies[0];
+        setMovie(featuredMovie);
+      } catch (error) {
+        console.error("Failed to load featured movie:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadFeaturedMovie();
+  }, []);
+
+  if (loading) {
+    return (
+      <View style={{ margin: 20, height: 200, justifyContent: 'center', alignItems: 'center' }}>
+        <ActivityIndicator size="large" color={colors.primary} />
+      </View>
+    );
+  }
+
+  if (!movie) {
+    return (
+      <View style={{ margin: 20, height: 200, justifyContent: 'center', alignItems: 'center' }}>
+        <Text style={{ color: colors.textSecondary }}>Failed to load featured movie</Text>
+      </View>
+    );
+  }
+
+  const releaseYear = movie.releaseDate ? movie.releaseDate.split('-')[0] : '';
+
   return (
     <View style={{ margin: 20 }}>
       <View style={{ 
@@ -14,7 +56,7 @@ const FeaturedMovie = () => {
       }}>
         {/* Movie poster image */}
         <Image
-          source={{ uri: 'https://image.tmdb.org/t/p/w500/aCIFMriQh8rvhxpN1IWGgvH0Tlg.jpg' }}
+          source={{ uri: movie.backdropPath || movie.posterPath || '' }}
           style={{ position: 'absolute', width: '100%', height: '100%' }}
           resizeMode="cover"
         />
@@ -39,21 +81,25 @@ const FeaturedMovie = () => {
           borderRadius: 12
         }}>
           <Text style={{ color: colors.rating, marginRight: 5 }}>★</Text>
-          <Text style={{ color: colors.text, fontWeight: 'bold' }}>8.4</Text>
+          <Text style={{ color: colors.text, fontWeight: 'bold' }}>{movie.voteAverage.toFixed(1)}</Text>
         </View>
         
-        <Text style={{ color: colors.text, fontSize: 22, fontWeight: 'bold' }}>Tenet</Text>
-        <Text style={{ color: colors.textSecondary, marginTop: 5 }}>Action, Sci-Fi • 2020</Text>
-        <View style={{ 
-          backgroundColor: colors.primary, 
-          alignSelf: 'flex-start', 
-          paddingVertical: 8, 
-          paddingHorizontal: 15, 
-          borderRadius: 20, 
-          marginTop: 10 
-        }}>
+        <Text style={{ color: colors.text, fontSize: 22, fontWeight: 'bold' }}>{movie.title}</Text>
+        <Text style={{ color: colors.textSecondary, marginTop: 5 }}>
+          {releaseYear ? `Released ${releaseYear}` : 'Coming Soon'}
+        </Text>
+        <TouchableOpacity 
+          style={{ 
+            backgroundColor: colors.primary, 
+            alignSelf: 'flex-start', 
+            paddingVertical: 8, 
+            paddingHorizontal: 15, 
+            borderRadius: 20, 
+            marginTop: 10 
+          }}
+        >
           <Text style={{ color: colors.text, fontWeight: 'bold' }}>Watch Now</Text>
-        </View>
+        </TouchableOpacity>
       </View>
     </View>
   );

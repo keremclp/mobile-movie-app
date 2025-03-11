@@ -1,50 +1,53 @@
-import { Text, View, ScrollView } from "react-native";
+import { Text, View, ScrollView, ActivityIndicator } from "react-native";
 import MovieCard from "./MovieCard";
 import { colors } from "../constants/colors";
+import { useEffect, useState } from "react";
+import { Movie } from "../types/movie";
+import { fetchNowPlayingMovies } from "../services/movieService";
 
 const RecentlyAdded = () => {
-  const movies = [
-    {
-      id: 1,
-      title: "Oppenheimer",
-      imageUrl: "https://image.tmdb.org/t/p/w500/8Gxv8gSFCU0XGDykEGv7zR1n2ua.jpg",
-      year: "2023"
-    },
-    {
-      id: 2,
-      title: "Barbie",
-      imageUrl: "https://image.tmdb.org/t/p/w500/iuFNMS8U5cb6xfzi51Dbkovj7vM.jpg",
-      year: "2023"
-    },
-    {
-      id: 3,
-      title: "Everything Everywhere",
-      imageUrl: "https://image.tmdb.org/t/p/w500/w3LxiVYdWWRvEVdn5RYq6jIqkb1.jpg",
-      year: "2022"
-    },
-    {
-      id: 4,
-      title: "Avatar 2",
-      imageUrl: "https://image.tmdb.org/t/p/w500/t6HIqrRAclMCA60NsSmeqe9RmNV.jpg",
-      year: "2022"
-    }
-  ];
+  const [movies, setMovies] = useState<Movie[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const loadMovies = async () => {
+      setLoading(true);
+      try {
+        const newMovies = await fetchNowPlayingMovies();
+        setMovies(newMovies);
+      } catch (error) {
+        console.error("Failed to load recent movies:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadMovies();
+  }, []);
 
   return (
     <View>
       <Text style={{ paddingHorizontal: 20, fontSize: 18, fontWeight: 'bold', color: colors.text, marginBottom: 10 }}>
         Recently Added
       </Text>
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ paddingLeft: 20 }}>
-        {movies.map(movie => (
-          <MovieCard 
-            key={movie.id}
-            imageUrl={movie.imageUrl}
-            title={movie.title}
-            year={movie.year}
-          />
-        ))}
-      </ScrollView>
+
+      {loading ? (
+        <View style={{ paddingLeft: 20, height: 180, justifyContent: 'center' }}>
+          <ActivityIndicator size="large" color={colors.primary} />
+        </View>
+      ) : (
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ paddingLeft: 20 }}>
+          {movies.map(movie => (
+            <MovieCard 
+              key={movie.id}
+              imageUrl={movie.posterPath}
+              title={movie.title}
+              year={movie.releaseDate ? movie.releaseDate.split('-')[0] : ''}
+              rating={movie.voteAverage}
+            />
+          ))}
+        </ScrollView>
+      )}
     </View>
   );
 };

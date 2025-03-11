@@ -1,45 +1,62 @@
-import { Text, View, ScrollView } from "react-native";
+import { Text, View, ScrollView, ActivityIndicator } from "react-native";
 import MovieCard from "./MovieCard";
 import { colors } from "../constants/colors";
+import { useEffect, useState } from "react";
+import { Movie } from "../types/movie";
+import { fetchPopularMovies } from "../services/movieService";
 
 const ContinueWatching = () => {
-  const movies = [
-    {
-      id: 1,
-      title: "Dune",
-      imageUrl: "https://image.tmdb.org/t/p/w500/d5NXSklXo0qyIYkgV94XAgMIckC.jpg",
-      progress: 70
-    },
-    {
-      id: 2,
-      title: "The Batman",
-      imageUrl: "https://image.tmdb.org/t/p/w500/74xTEgt7R36Fpooo50r9T25onhq.jpg",
-      progress: 30
-    },
-    {
-      id: 3,
-      title: "Inception",
-      imageUrl: "https://image.tmdb.org/t/p/w500/9gk7adHYeDvHkCSEqAvQNLV5Uge.jpg",
-      progress: 45
-    }
-  ];
+  const [movies, setMovies] = useState<Movie[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const loadMovies = async () => {
+      setLoading(true);
+      try {
+        const popularMovies = await fetchPopularMovies();
+        
+        // Take first 4 movies and assign random progress
+        const watchingMovies = popularMovies.slice(0, 4).map(movie => ({
+          ...movie,
+          // Simulate random progress between 10-90%
+          progress: Math.floor(Math.random() * 80) + 10
+        }));
+        
+        setMovies(watchingMovies);
+      } catch (error) {
+        console.error("Failed to load continue watching movies:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadMovies();
+  }, []);
 
   return (
     <View style={{ marginBottom: 20 }}>
       <Text style={{ paddingHorizontal: 20, fontSize: 18, fontWeight: 'bold', color: colors.text, marginBottom: 10 }}>
         Continue Watching
       </Text>
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ paddingLeft: 20 }}>
-        {movies.map(movie => (
-          <MovieCard 
-            key={movie.id}
-            imageUrl={movie.imageUrl}
-            title={movie.title}
-            progress={movie.progress}
-            width={140}
-          />
-        ))}
-      </ScrollView>
+
+      {loading ? (
+        <View style={{ paddingLeft: 20, height: 180, justifyContent: 'center' }}>
+          <ActivityIndicator size="large" color={colors.primary} />
+        </View>
+      ) : (
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ paddingLeft: 20 }}>
+          {movies.map(movie => (
+            <MovieCard 
+              key={movie.id}
+              imageUrl={movie.posterPath}
+              title={movie.title}
+              progress={(movie as any).progress}
+              width={140}
+              rating={movie.voteAverage}
+            />
+          ))}
+        </ScrollView>
+      )}
     </View>
   );
 };
