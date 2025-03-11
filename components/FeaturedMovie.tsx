@@ -13,8 +13,18 @@ const FeaturedMovie = () => {
       setLoading(true);
       try {
         const trendingMovies = await fetchTrendingMovies();
-        // Get the first trending movie with a backdrop image
-        const featuredMovie = trendingMovies.find(m => m.backdropPath) || trendingMovies[0];
+        
+        // Filter movies that have backdrop images
+        const moviesWithBackdrop = trendingMovies.filter(m => m.backdropPath);
+        
+        // If there are movies with backdrop, select one randomly from those
+        // Otherwise, select any movie randomly from the full list
+        const moviePool = moviesWithBackdrop.length > 0 ? moviesWithBackdrop : trendingMovies;
+        
+        // Get a random movie from the pool
+        const randomIndex = Math.floor(Math.random() * moviePool.length);
+        const featuredMovie = moviePool[randomIndex];
+        
         setMovie(featuredMovie);
       } catch (error) {
         console.error("Failed to load featured movie:", error);
