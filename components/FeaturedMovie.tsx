@@ -51,13 +51,12 @@ const FeaturedMovie = () => {
         height: 200, 
         borderRadius: 15,
         justifyContent: 'flex-end',
-        padding: 15,
         overflow: 'hidden'
       }}>
         {/* Movie poster image */}
         <Image
           source={{ uri: movie.backdropPath || movie.posterPath || '' }}
-          style={{ position: 'absolute', width: '100%', height: '100%' }}
+          style={{ position: 'absolute', width: '100%', height: '100%', borderRadius: 15 }}
           resizeMode="cover"
         />
         
@@ -84,22 +83,27 @@ const FeaturedMovie = () => {
           <Text style={{ color: colors.text, fontWeight: 'bold' }}>{movie.voteAverage.toFixed(1)}</Text>
         </View>
         
-        <Text style={{ color: colors.text, fontSize: 22, fontWeight: 'bold' }}>{movie.title}</Text>
-        <Text style={{ color: colors.textSecondary, marginTop: 5 }}>
-          {releaseYear ? `Released ${releaseYear}` : 'Coming Soon'}
-        </Text>
-        <TouchableOpacity 
-          style={{ 
-            backgroundColor: colors.primary, 
-            alignSelf: 'flex-start', 
-            paddingVertical: 8, 
-            paddingHorizontal: 15, 
-            borderRadius: 20, 
-            marginTop: 10 
-          }}
-        >
-          <Text style={{ color: colors.text, fontWeight: 'bold' }}>Watch Now</Text>
-        </TouchableOpacity>
+        
+        {/* Movie details */}
+        <View style={{ padding: 20 }}>
+          <Text style={{ color: colors.text, fontSize: 18, fontWeight: 'bold' }}>{movie.title}</Text>
+          <Text style={{ color: colors.textSecondary, marginTop: 5 }}>
+            {releaseYear ? `Released ${releaseYear}` : 'Coming Soon'}
+          </Text>
+          <TouchableOpacity 
+            style={{ 
+              backgroundColor: colors.primary, 
+              padding: 10, 
+              borderRadius: 10, 
+              marginTop: 10, 
+              alignSelf: 'flex-start' 
+            }}
+            activeOpacity={0.7}
+          >
+            <Text style={{ color: colors.background, fontWeight: 'bold' }}>Watch Now</Text>
+          </TouchableOpacity>
+
+        </View>
       </View>
     </View>
   );
