@@ -111,6 +111,24 @@ export const fetchMoviesByGenre = async (genreId: string | number): Promise<Movi
   }
 };
 
+export const searchMovies = async (query: string): Promise<Movie[]> => {
+  if (!query || query.trim() === '') return [];
+  
+  try {
+    const response = await fetch(
+      `${API_BASE_URL}/search/movie?api_key=${getApiKey()}&language=en-US&query=${encodeURIComponent(query)}&page=1&include_adult=false`
+    );
+    
+    if (!response.ok) throw new Error('Failed to search movies');
+    
+    const data = await response.json();
+    return transformMovies(data.results);
+  } catch (error) {
+    console.error('Error searching movies:', error);
+    return [];
+  }
+};
+
 export interface MovieVideo {
   id: string;
   key: string;
