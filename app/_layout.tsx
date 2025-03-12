@@ -1,6 +1,7 @@
 import { Stack } from "expo-router";
 import { Platform } from "react-native";
 import { colors } from "../constants/colors";
+import "../services/firebase"; // Import Firebase initialization
 
 export default function RootLayout() {
   return (
