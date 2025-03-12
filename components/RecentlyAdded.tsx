@@ -4,6 +4,7 @@ import { colors } from "../constants/colors";
 import { useEffect, useState } from "react";
 import { Movie } from "../types/movie";
 import { fetchNowPlayingMovies } from "../services/movieService";
+import { router } from "expo-router";
 
 const RecentlyAdded = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
@@ -44,6 +45,10 @@ const RecentlyAdded = () => {
               title={movie.title}
               year={movie.releaseDate ? movie.releaseDate.split('-')[0] : ''}
               rating={movie.voteAverage}
+              onPress={() => router.push({
+                pathname: "/movie/[id]",
+                params: { id: movie.id }
+              })}
             />
           ))}
         </ScrollView>

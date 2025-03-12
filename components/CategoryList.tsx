@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { fetchMovieGenres, fetchMoviesByGenre } from "../services/movieService";
 import { Movie } from "../types/movie";
 import MovieCard from "./MovieCard";
+import { router } from "expo-router";
 
 const CategoryList = () => {
   const [categories, setCategories] = useState<Array<{id: string | number, name: string, active: boolean}>>([]);
@@ -121,6 +122,10 @@ const CategoryList = () => {
                 title={movie.title}
                 year={movie.releaseDate ? movie.releaseDate.split('-')[0] : ''}
                 rating={movie.voteAverage}
+                onPress={() => router.push({
+                  pathname: "/movie/[id]",
+                  params: { id: movie.id }
+                })}
               />
             ))}
           </ScrollView>

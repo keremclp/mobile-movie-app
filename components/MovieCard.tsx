@@ -1,4 +1,4 @@
-import { Text, View, Image } from "react-native";
+import { Text, View, Image, TouchableOpacity } from "react-native";
 import { colors } from "../constants/colors";
 
 type MovieCardProps = {
@@ -8,11 +8,16 @@ type MovieCardProps = {
   progress?: number; // Progress percentage (0-100)
   width?: number;
   rating?: number;
+  onPress?: () => void;
 };
 
-const MovieCard = ({ imageUrl, title, year, progress, width = 120, rating }: MovieCardProps) => {
+const MovieCard = ({ imageUrl, title, year, progress, width = 120, rating, onPress }: MovieCardProps) => {
   return (
-    <View style={{ marginRight: 15, width }}>
+    <TouchableOpacity 
+      activeOpacity={0.8}
+      onPress={onPress}
+      style={{ marginRight: 15, width }}
+    >
       <View style={{ height: 180, backgroundColor: colors.card, borderRadius: 10, marginBottom: 5, overflow: 'hidden' }}>
         {imageUrl ? (
           <Image
@@ -63,7 +68,7 @@ const MovieCard = ({ imageUrl, title, year, progress, width = 120, rating }: Mov
       
       <Text style={{ color: colors.text, marginTop: 8, fontWeight: progress ? '500' : 'normal' }}>{title}</Text>
       {year && <Text style={{ color: colors.textMuted, fontSize: 12 }}>{year}</Text>}
-    </View>
+    </TouchableOpacity>
   );
 };
 

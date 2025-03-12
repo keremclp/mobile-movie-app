@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { Movie } from "../types/movie";
 import { fetchMovieVideos, fetchTrendingMovies } from "../services/movieService";
 import VideoPlayer from "./VideoPlayer";
+import { router } from "expo-router";
 
 const FeaturedMovie = () => {
   const [movie, setMovie] = useState<Movie | null>(null);
@@ -69,6 +70,15 @@ const FeaturedMovie = () => {
     setIsVideoVisible(false);
   };
 
+  const handleViewDetails = () => {
+    if (movie) {
+      router.push({
+        pathname: "/movie/[id]",
+        params: { id: movie.id }
+      });
+    }
+  };
+
   if (loading) {
     return (
       <View style={{ margin: 20, height: 200, justifyContent: 'center', alignItems: 'center' }}>
@@ -132,22 +142,35 @@ const FeaturedMovie = () => {
           <Text style={{ color: colors.textSecondary, marginTop: 5 }}>
             {releaseYear ? `Released ${releaseYear}` : 'Coming Soon'}
           </Text>
-          <TouchableOpacity 
-            style={{ 
-              backgroundColor: colors.primary, 
-              padding: 10, 
-              borderRadius: 10, 
-              marginTop: 10, 
-              alignSelf: 'flex-start' 
-            }}
-            activeOpacity={0.7}
-            onPress={handleWatchNow}
-            disabled={loadingVideo}
-          >
-            <Text style={{ color: colors.background, fontWeight: 'bold' }}>
-              {loadingVideo ? 'Loading...' : 'Watch Now'}
-            </Text>
-          </TouchableOpacity>
+          <View style={{ flexDirection: 'row', marginTop: 10 }}>
+            <TouchableOpacity 
+              style={{ 
+                backgroundColor: colors.primary, 
+                padding: 10, 
+                borderRadius: 10, 
+                marginRight: 10
+              }}
+              activeOpacity={0.7}
+              onPress={handleWatchNow}
+              disabled={loadingVideo}
+            >
+              <Text style={{ color: colors.background, fontWeight: 'bold' }}>
+                {loadingVideo ? 'Loading...' : 'Watch Now'}
+              </Text>
+            </TouchableOpacity>
+            
+            <TouchableOpacity 
+              style={{ 
+                backgroundColor: colors.card, 
+                padding: 10, 
+                borderRadius: 10
+              }}
+              activeOpacity={0.7}
+              onPress={handleViewDetails}
+            >
+              <Text style={{ color: colors.text, fontWeight: 'bold' }}>View Details</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
       
