@@ -1,20 +1,44 @@
 import { Stack } from "expo-router";
-import { Platform } from "react-native";
+import { useEffect, useState } from "react";
+import { View, ActivityIndicator } from "react-native";
 import { colors } from "../constants/colors";
 import "../services/firebase"; // Import Firebase initialization
+import { AuthProvider, useAuth } from "../contexts/AuthContext";
 
-export default function RootLayout() {
+function LoadingScreen() {
+  return (
+    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: colors.background }}>
+      <ActivityIndicator size="large" color={colors.primary} />
+    </View>
+  );
+}
+
+function RootLayoutNav() {
+  const { loading } = useAuth();
+  const [appReady, setAppReady] = useState(false);
+
+  useEffect(() => {
+    // This ensures we don't show the Stack until after auth loading is done
+    if (!loading) {
+      setAppReady(true);
+    }
+  }, [loading]);
+
+  if (!appReady) {
+    return <LoadingScreen />;
+  }
+
   return (
     <Stack
       screenOptions={{
         headerShown: false,
         animation: "slide_from_right",
         contentStyle: { backgroundColor: colors.background },
-        // Use native stack animation options
         presentation: "card",
         animationDuration: 300,
       }}
     >
+      <Stack.Screen name="index" />
       <Stack.Screen 
         name="movie/[id]" 
         options={{
@@ -22,6 +46,17 @@ export default function RootLayout() {
           animationDuration: 300,
         }} 
       />
+      <Stack.Screen name="login" options={{ gestureEnabled: false }} />
+      <Stack.Screen name="register" options={{ gestureEnabled: false }} />
+      <Stack.Screen name="profile" />
     </Stack>
+  );
+}
+
+export default function RootLayout() {
+  return (
+    <AuthProvider>
+      <RootLayoutNav />
+    </AuthProvider>
   );
 }
