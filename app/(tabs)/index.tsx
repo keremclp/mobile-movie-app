@@ -43,7 +43,7 @@ export default function HomeScreen() {
 
       <ScrollView 
         showsVerticalScrollIndicator={false} 
-        contentContainerStyle={{ paddingBottom: 100 }}
+        contentContainerStyle={{ paddingBottom: 0 }}
       >
         <CategoryList />
         <FeaturedMovie />
