@@ -1,4 +1,4 @@
-import { Text, View, Image, TouchableOpacity } from "react-native";
+import { Text, View, Image, TouchableOpacity, DimensionValue } from "react-native";
 import { colors } from "../constants/colors";
 
 type MovieCardProps = {
@@ -6,7 +6,7 @@ type MovieCardProps = {
   title: string;
   year?: string;
   progress?: number; // Progress percentage (0-100)
-  width?: number;
+  width?: DimensionValue; // Updated to accept string values like '100%'
   rating?: number;
   onPress?: () => void;
 };

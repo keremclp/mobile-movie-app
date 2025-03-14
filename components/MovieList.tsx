@@ -10,13 +10,15 @@ interface MovieListProps {
   horizontal?: boolean;
   title?: string;
   emptyMessage?: string;
+  numColumns?: number; // Added numColumns prop
 }
 
 const MovieList: React.FC<MovieListProps> = ({
   movies, 
   horizontal = true, 
   title,
-  emptyMessage = 'No movies available'
+  emptyMessage = 'No movies available',
+  numColumns = 2 // Default to 2 columns
 }) => {
   if (movies.length === 0) {
     return (
@@ -38,17 +40,25 @@ const MovieList: React.FC<MovieListProps> = ({
         contentContainerStyle={horizontal ? styles.scrollViewContent : styles.gridContent}
       >
         {movies.map(movie => (
-          <MovieCard 
-            key={movie.id}
-            imageUrl={movie.posterPath}
-            title={movie.title}
-            year={movie.releaseDate ? movie.releaseDate.split('-')[0] : ''}
-            rating={movie.voteAverage}
-            onPress={() => router.push({
-              pathname: "/movie/[id]",
-              params: { id: movie.id }
-            })}
-          />
+          <View 
+            key={movie.id} 
+            style={[
+              styles.gridItem, 
+              !horizontal && { width: `${100/numColumns}%` }
+            ]}
+          >
+            <MovieCard 
+              imageUrl={movie.posterPath}
+              title={movie.title}
+              year={movie.releaseDate ? movie.releaseDate.split('-')[0] : ''}
+              rating={movie.voteAverage}
+              width={!horizontal ? '100%' : undefined}
+              onPress={() => router.push({
+                pathname: "/movie/[id]",
+                params: { id: movie.id }
+              })}
+            />
+          </View>
         ))}
       </ScrollView>
     </View>
@@ -72,8 +82,11 @@ const styles = StyleSheet.create({
   gridContent: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    justifyContent: 'space-between',
     paddingHorizontal: 20,
+  },
+  gridItem: {
+    paddingHorizontal: 5,
+    marginBottom: 15,
   },
   emptyContainer: {
     height: 180,

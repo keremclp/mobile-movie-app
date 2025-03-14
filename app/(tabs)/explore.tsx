@@ -42,18 +42,22 @@ export default function ExploreScreen() {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollContent}
       >
-        <CategoryList />
         
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Popular Movies</Text>
           {loading ? (
             <ActivityIndicator size="large" color={colors.primary} style={styles.loader} />
           ) : (
-            <MovieList movies={popularMovies} />
+            <MovieList 
+              movies={popularMovies} 
+              horizontal={false}
+              title=""
+              numColumns={3}
+              key={'popularMovies'}
+            />
           )}
         </View>
         
-        <RecentlyAdded />
       </ScrollView>
     </View>
   );
