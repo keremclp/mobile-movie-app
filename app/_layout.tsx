@@ -1,6 +1,6 @@
-import { Stack } from "expo-router";
+import { Stack, Tabs } from "expo-router";
 import { useEffect, useState } from "react";
-import { View, ActivityIndicator } from "react-native";
+import { View, ActivityIndicator, Text } from "react-native";
 import { colors } from "../constants/colors";
 import "../services/firebase"; // Import Firebase initialization
 import { AuthProvider, useAuth } from "../contexts/AuthContext";
@@ -33,20 +33,42 @@ function RootLayoutNav() {
       screenOptions={{
         headerShown: false,
         contentStyle: { backgroundColor: colors.background },
-        presentation: "card",
       }}
     >
-      <Stack.Screen name="index" />
+      {/* Auth Group - No tab navigation */}
       <Stack.Screen 
-        name="movie/[id]" 
-        options={{
-          presentation: "card",
+        name="(auth)" 
+        options={{ 
+          headerShown: false,
+          gestureEnabled: false,
         }} 
       />
-      <Stack.Screen name="search" options={{ presentation: "card" }} />
-      <Stack.Screen name="login" options={{ gestureEnabled: false }} />
-      <Stack.Screen name="register" options={{ gestureEnabled: false }} />
-      <Stack.Screen name="profile" />
+      
+      {/* Main app screens with tab navigation */}
+      <Stack.Screen 
+        name="(tabs)" 
+        options={{ 
+          headerShown: false,
+        }} 
+      />
+      
+      {/* Movie Detail screens */}
+      <Stack.Screen 
+        name="movie/[id]" 
+        options={{ 
+          presentation: "card",
+          animation: "slide_from_right",
+        }} 
+      />
+      
+      {/* Search screen */}
+      <Stack.Screen 
+        name="search" 
+        options={{ 
+          presentation: "card",
+          animation: "slide_from_bottom",
+        }} 
+      />
     </Stack>
   );
 }

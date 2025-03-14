@@ -4,18 +4,18 @@ import {
   Text, 
   TextInput, 
   TouchableOpacity, 
-  StyleSheet, 
-  ActivityIndicator, 
   Alert, 
+  ActivityIndicator, 
   StatusBar,
   KeyboardAvoidingView,
   Platform,
   ScrollView 
 } from 'react-native';
 import { router } from 'expo-router';
-import { colors } from '../constants/colors';
-import { registerUser } from '../services/authService';
-import { useAuth } from '../contexts/AuthContext';
+import { colors } from '../../constants/colors';
+import { registerUser } from '../../services/authService';
+import { useAuth } from '../../contexts/AuthContext';
+import { styles } from './styles/authStyles';
 
 export default function RegisterScreen() {
   const [email, setEmail] = useState('');
@@ -117,7 +117,7 @@ export default function RegisterScreen() {
 
             <View style={styles.loginContainer}>
               <Text style={styles.loginText}>Already have an account?</Text>
-              <TouchableOpacity onPress={() => router.push('/login')}>
+              <TouchableOpacity onPress={() => router.push('/(auth)/login')}>
                 <Text style={styles.loginLink}>Login</Text>
               </TouchableOpacity>
             </View>
@@ -127,77 +127,3 @@ export default function RegisterScreen() {
     </KeyboardAvoidingView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.background,
-  },
-  contentContainer: {
-    flex: 1,
-    padding: 20,
-    justifyContent: 'center',
-    minHeight: '100%',
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: colors.text,
-    marginTop: 60,
-    marginBottom: 8,
-  },
-  subtitle: {
-    fontSize: 16,
-    color: colors.textSecondary,
-    marginBottom: 30,
-  },
-  form: {
-    width: '100%',
-  },
-  inputContainer: {
-    marginBottom: 20,
-  },
-  label: {
-    color: colors.text,
-    marginBottom: 8,
-    fontSize: 16,
-  },
-  input: {
-    backgroundColor: colors.card,
-    borderRadius: 10,
-    padding: 15,
-    color: colors.text,
-    fontSize: 16,
-  },
-  hint: {
-    color: colors.textMuted,
-    fontSize: 12,
-    marginTop: 4,
-  },
-  button: {
-    backgroundColor: colors.primary,
-    borderRadius: 10,
-    padding: 15,
-    alignItems: 'center',
-    marginTop: 10,
-  },
-  buttonText: {
-    color: colors.background,
-    fontWeight: 'bold',
-    fontSize: 16,
-  },
-  loginContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    marginTop: 20,
-    marginBottom: 40,
-  },
-  loginText: {
-    color: colors.textSecondary,
-    marginRight: 5,
-  },
-  loginLink: {
-    color: colors.primary,
-    fontWeight: 'bold',
-  },
-});

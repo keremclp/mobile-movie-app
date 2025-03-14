@@ -12,9 +12,10 @@ import {
   Platform
 } from 'react-native';
 import { router } from 'expo-router';
-import { colors } from '../constants/colors';
-import { signIn } from '../services/authService';
-import { useAuth } from '../contexts/AuthContext';
+import { colors } from '../../constants/colors';
+import { signIn } from '../../services/authService';
+import { useAuth } from '../../contexts/AuthContext';
+import { styles } from './styles/authStyles';
 
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
@@ -89,7 +90,7 @@ export default function LoginScreen() {
 
         <View style={styles.registerContainer}>
           <Text style={styles.registerText}>Don't have an account?</Text>
-          <TouchableOpacity onPress={() => router.push('/register')}>
+          <TouchableOpacity onPress={() => router.push('/(auth)/register')}>
             <Text style={styles.registerLink}>Register</Text>
           </TouchableOpacity>
         </View>
@@ -97,66 +98,3 @@ export default function LoginScreen() {
     </KeyboardAvoidingView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-    justifyContent: 'center',
-    backgroundColor: colors.background,
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: colors.text,
-    marginBottom: 8,
-  },
-  subtitle: {
-    fontSize: 16,
-    color: colors.textSecondary,
-    marginBottom: 30,
-  },
-  form: {
-    width: '100%',
-  },
-  inputContainer: {
-    marginBottom: 20,
-  },
-  label: {
-    color: colors.text,
-    marginBottom: 8,
-    fontSize: 16,
-  },
-  input: {
-    backgroundColor: colors.card,
-    borderRadius: 10,
-    padding: 15,
-    color: colors.text,
-    fontSize: 16,
-  },
-  button: {
-    backgroundColor: colors.primary,
-    borderRadius: 10,
-    padding: 15,
-    alignItems: 'center',
-    marginTop: 10,
-  },
-  buttonText: {
-    color: colors.background,
-    fontWeight: 'bold',
-    fontSize: 16,
-  },
-  registerContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    marginTop: 20,
-  },
-  registerText: {
-    color: colors.textSecondary,
-    marginRight: 5,
-  },
-  registerLink: {
-    color: colors.primary,
-    fontWeight: 'bold',
-  },
-});
