@@ -3,7 +3,7 @@ import MovieCard from "./MovieCard";
 import { colors } from "../constants/colors";
 import { useEffect, useState } from "react";
 import { Movie } from "../types/movie";
-import { fetchNowPlayingMovies } from "../services/movieService";
+import { fetchNowPlayingMovies } from "../services/discoverService";
 import { router } from "expo-router";
 
 const RecentlyAdded = () => {

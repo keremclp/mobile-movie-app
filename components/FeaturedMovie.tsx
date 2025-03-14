@@ -2,16 +2,23 @@ import { Text, View, Image, ActivityIndicator, TouchableOpacity } from "react-na
 import { colors } from "../constants/colors";
 import { useEffect, useState } from "react";
 import { Movie } from "../types/movie";
-import { fetchMovieVideos, fetchTrendingMovies } from "../services/movieService";
+import { fetchTrendingMovies } from "../services/discoverService";
 import VideoPlayer from "./VideoPlayer";
 import { router } from "expo-router";
+import useMovieVideo from "../hooks/useMovieVideo";
 
 const FeaturedMovie = () => {
   const [movie, setMovie] = useState<Movie | null>(null);
   const [loading, setLoading] = useState(true);
-  const [videoKey, setVideoKey] = useState<string>('');
-  const [isVideoVisible, setIsVideoVisible] = useState(false);
-  const [loadingVideo, setLoadingVideo] = useState(false);
+  
+  // Use our movie video hook
+  const { 
+    videoKey, 
+    isVideoVisible, 
+    loadingVideo, 
+    handleWatchTrailer, 
+    closeVideo 
+  } = useMovieVideo(movie?.id);
 
   useEffect(() => {
     const loadFeaturedMovie = async () => {
@@ -40,35 +47,6 @@ const FeaturedMovie = () => {
 
     loadFeaturedMovie();
   }, []);
-
-  const handleWatchNow = async () => {
-    if (!movie) return;
-    
-    setLoadingVideo(true);
-    try {
-      const videos = await fetchMovieVideos(movie.id);
-      
-      // Find the first official trailer, or any trailer, or just the first video
-      const trailer = videos.find(v => v.type === 'Trailer' && v.official) || 
-                      videos.find(v => v.type === 'Trailer') || 
-                      videos[0];
-      
-      if (trailer && trailer.site.toLowerCase() === 'youtube') {
-        setVideoKey(trailer.key);
-        setIsVideoVisible(true);
-      } else {
-        console.log('No suitable video found');
-      }
-    } catch (error) {
-      console.error('Error getting movie videos:', error);
-    } finally {
-      setLoadingVideo(false);
-    }
-  };
-
-  const closeVideo = () => {
-    setIsVideoVisible(false);
-  };
 
   const handleViewDetails = () => {
     if (movie) {
@@ -151,7 +129,7 @@ const FeaturedMovie = () => {
                 marginRight: 10
               }}
               activeOpacity={0.7}
-              onPress={handleWatchNow}
+              onPress={handleWatchTrailer}
               disabled={loadingVideo}
             >
               <Text style={{ color: colors.background, fontWeight: 'bold' }}>

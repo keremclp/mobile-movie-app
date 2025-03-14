@@ -1,66 +1,21 @@
 import { useLocalSearchParams } from 'expo-router';
 import { View, Text, Image, ScrollView, ActivityIndicator, StyleSheet, TouchableOpacity } from 'react-native';
-import { useEffect, useState } from 'react';
 import { router } from 'expo-router';
 import { colors } from '../../constants/colors';
-import { fetchMovieDetails, fetchMovieVideos } from '../../services/movieService';
-import { MovieDetails } from '../../types/movie';
 import VideoPlayer from '../../components/VideoPlayer';
+import { useMovieDetails } from '../../hooks/useMovieDetails';
 
 export default function MovieDetailsScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
-  const [movie, setMovie] = useState<MovieDetails | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [videoKey, setVideoKey] = useState<string>('');
-  const [isVideoVisible, setIsVideoVisible] = useState(false);
-  const [loadingVideo, setLoadingVideo] = useState(false);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      if (!id) return;
-      
-      setLoading(true);
-      try {
-        const movieData = await fetchMovieDetails(Number(id));
-        setMovie(movieData);
-      } catch (error) {
-        console.error('Error fetching movie details:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, [id]);
-
-  const handleWatchTrailer = async () => {
-    if (!movie) return;
-    
-    setLoadingVideo(true);
-    try {
-      const videos = await fetchMovieVideos(movie.id);
-      
-      // Find the first official trailer, or any trailer, or just the first video
-      const trailer = videos.find(v => v.type === 'Trailer' && v.official) || 
-                      videos.find(v => v.type === 'Trailer') || 
-                      videos[0];
-      
-      if (trailer && trailer.site.toLowerCase() === 'youtube') {
-        setVideoKey(trailer.key);
-        setIsVideoVisible(true);
-      } else {
-        console.log('No suitable video found');
-      }
-    } catch (error) {
-      console.error('Error getting movie videos:', error);
-    } finally {
-      setLoadingVideo(false);
-    }
-  };
-
-  const closeVideo = () => {
-    setIsVideoVisible(false);
-  };
+  const {
+    movie,
+    loading,
+    videoKey,
+    isVideoVisible,
+    loadingVideo,
+    handleWatchTrailer,
+    closeVideo
+  } = useMovieDetails(id);
 
   if (loading) {
     return (

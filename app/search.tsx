@@ -14,7 +14,8 @@ import {
 } from 'react-native';
 import { useLocalSearchParams, router } from 'expo-router';
 import { colors } from '../constants/colors';
-import { searchMoviesAdvanced, fetchMovieGenres } from '../services/movieService';
+import { searchMoviesAdvanced } from '../services/searchService';
+import { fetchMovieGenres } from '../services/genreService';
 import { Movie } from '../types/movie';
 import MovieCard from '../components/MovieCard';
 import BottomNavigation from '../components/BottomNavigation';

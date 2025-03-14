@@ -62,11 +62,11 @@ export const fetchMovieDetails = async (movieId: number): Promise<MovieDetails |
       id: data.id,
       title: data.title,
       overview: data.overview,
-      posterPath: data.poster_path 
-        ? `${API_IMAGE_BASE_URL}/${IMAGE_SIZES.poster.large}${data.poster_path}`
+      posterPath: data.poster_path
+        ? getImageUrl(data.poster_path, 'poster', 'large')
         : null,
-      backdropPath: data.backdrop_path 
-        ? `${API_IMAGE_BASE_URL}/${IMAGE_SIZES.backdrop.large}${data.backdrop_path}`
+      backdropPath: data.backdrop_path
+        ? getImageUrl(data.backdrop_path, 'backdrop', 'large')
         : null,
       releaseDate: data.release_date,
       voteAverage: data.vote_average,
@@ -207,15 +207,19 @@ export const searchMoviesAdvanced = async (params: SearchParams): Promise<Search
   }
 };
 
+const getImageUrl = (filePath: string, imageType: 'poster' | 'backdrop', size: 'small' | 'medium' | 'large'): string => {
+  return `${API_IMAGE_BASE_URL}/${IMAGE_SIZES[imageType][size]}${filePath}`;
+};
+
 // Helper function to transform movies from API format to our app format
 const transformMovies = (movies: any[]): Movie[] => {
   return movies.map(movie => ({
     id: movie.id,
     title: movie.title,
-    posterPath: movie.poster_path 
+    posterPath: movie.poster_path
       ? `${API_IMAGE_BASE_URL}/${IMAGE_SIZES.poster.medium}${movie.poster_path}`
       : null,
-    backdropPath: movie.backdrop_path 
+    backdropPath: movie.backdrop_path
       ? `${API_IMAGE_BASE_URL}/${IMAGE_SIZES.backdrop.medium}${movie.backdrop_path}`
       : null,
     releaseDate: movie.release_date,

@@ -1,7 +1,7 @@
 import { ScrollView, Text, View, ActivityIndicator, TouchableOpacity } from "react-native";
 import { colors } from "../constants/colors";
 import { useState, useEffect } from "react";
-import { fetchMovieGenres, fetchMoviesByGenre } from "../services/movieService";
+import { fetchMovieGenres, fetchMoviesByGenre } from "../services/genreService";
 import { Movie } from "../types/movie";
 import MovieCard from "./MovieCard";
 import { router } from "expo-router";
