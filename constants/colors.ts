@@ -1,5 +1,6 @@
 export const colors = {
-  background: '#121212',
+  // grey theme
+  background: '#1a1a1a',
   card: '#2a2a2a',
   text: '#fff',
   textSecondary: '#aaa',
