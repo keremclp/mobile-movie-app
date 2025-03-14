@@ -16,13 +16,15 @@ export const styles = StyleSheet.create({
     fontSize: 28,
     fontWeight: 'bold',
     color: colors.text,
-    marginTop: 60,
+    marginTop: 70,
     marginBottom: 8,
+    marginLeft: 20,
   },
   subtitle: {
     fontSize: 16,
     color: colors.textSecondary,
-    marginBottom: 30,
+    marginBottom: 40,
+    marginLeft: 20,
   },
   form: {
     width: '100%',
