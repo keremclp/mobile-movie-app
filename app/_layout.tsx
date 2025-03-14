@@ -43,6 +43,7 @@ function RootLayoutNav() {
           presentation: "card",
         }} 
       />
+      <Stack.Screen name="search" options={{ presentation: "card" }} />
       <Stack.Screen name="login" options={{ gestureEnabled: false }} />
       <Stack.Screen name="register" options={{ gestureEnabled: false }} />
       <Stack.Screen name="profile" />
