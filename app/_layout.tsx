@@ -32,10 +32,8 @@ function RootLayoutNav() {
     <Stack
       screenOptions={{
         headerShown: false,
-        animation: "slide_from_right",
         contentStyle: { backgroundColor: colors.background },
         presentation: "card",
-        animationDuration: 300,
       }}
     >
       <Stack.Screen name="index" />
@@ -43,7 +41,6 @@ function RootLayoutNav() {
         name="movie/[id]" 
         options={{
           presentation: "card",
-          animationDuration: 300,
         }} 
       />
       <Stack.Screen name="login" options={{ gestureEnabled: false }} />
